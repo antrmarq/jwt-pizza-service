@@ -125,6 +125,7 @@ jobs:
           aws ecs update-service --cluster jwt-pizza-service --service jwt-pizza-service --force-new-deployment
       - name: Write config file
         run: |
+          mkdir -p src  # Ensure the src directory exists
           echo "module.exports = {
             jwtSecret: '${{ secrets.JWT_SECRET }}',
             db: {
@@ -141,9 +142,4 @@ jobs:
               url: 'https://pizza-factory.cs329.click',
               apiKey: '${{ secrets.FACTORY_API_KEY }}',
             },
-            metrics: {
-              source: 'jwt-pizza-service',
-              url: '${{ secrets.METRICS_URL }}',
-              apiKey: '${{ secrets.METRICS_API_KEY }}',
-            },            
           };" > src/config.js
