@@ -125,7 +125,7 @@ jobs:
           aws ecs update-service --cluster jwt-pizza-service --service jwt-pizza-service --force-new-deployment
       - name: Write config file
         run: |
-          mkdir -p src  # Ensure the src directory exists
+          mkdir -p src
           echo "module.exports = {
             jwtSecret: '${{ secrets.JWT_SECRET }}',
             db: {

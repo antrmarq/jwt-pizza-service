@@ -33,6 +33,7 @@ function sendMetricsPeriodically(period) {
 }
 
 function sendMetricToGrafana(metricName, metricValue, type, unit) {
+  console.log(`Sending metric: ${metricName} = ${metricValue} (${type}, ${unit})`);
   const metric = {
     resourceMetrics: [
       {
@@ -114,8 +115,8 @@ let authMetrics = {
   }
   
   function sendAuthMetrics() {
-    sendMetricToGrafana('auth_successful_attempts', authMetrics.successfulLogins, 'sum', '1');
-    sendMetricToGrafana('auth_failed_attempts', authMetrics.failedLogins, 'sum', '1');
+    sendMetricToGrafana('successful', authMetrics.successfulLogins, 'sum', '1');
+    sendMetricToGrafana('failed', authMetrics.failedLogins, 'sum', '1');
   
     authMetrics.successfulLogins = 0;
     authMetrics.failedLogins = 0;
@@ -141,16 +142,15 @@ function requestTracker(req, res, next) {
     res.on('finish', () => {
       const [seconds, nanoseconds] = process.hrtime(start);
       const durationMs = (seconds * 1000) + (nanoseconds / 1e6);
-        
-      sendMetricToGrafana(`request_time_${req.method}`, durationMs.toFixed(2), 'sum', 'ms');
-      sendMetricToGrafana(`requests_${req.method}`, requestMetrics.methods[req.method], 'sum', '1');
-        sendMetricToGrafana('requests_total', requestMetrics.totalRequests, 'sum', '1');
-    });
-  
-    next();
-  }
 
-  let pizzasSold = 0;
+      sendMetricToGrafana(`requests_${req.method}`, requestMetrics.methods[req.method], 'sum', '1');
+      sendMetricToGrafana('requests_total', requestMetrics.totalRequests, 'sum', '1');
+    });
+
+    next();
+};
+
+let pizzasSold = 0;
 let creationFailures = 0;
 let revenue = 0;
 
