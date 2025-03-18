@@ -138,7 +138,6 @@ function requestTracker(req, res, next) {
     requestMetrics.totalRequests++;
     requestMetrics.methods[req.method] = (requestMetrics.methods[req.method] || 0) + 1;
 
-    const start = process.hrtime();
     res.on('finish', () => {
       sendMetricToGrafana(`requests_${req.method}`, requestMetrics.methods[req.method], 'sum', '1');
       sendMetricToGrafana('requests_total', requestMetrics.totalRequests, 'sum', '1');
