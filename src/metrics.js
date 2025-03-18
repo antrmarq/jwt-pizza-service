@@ -140,9 +140,6 @@ function requestTracker(req, res, next) {
 
     const start = process.hrtime();
     res.on('finish', () => {
-      const [seconds, nanoseconds] = process.hrtime(start);
-      const durationMs = (seconds * 1000) + (nanoseconds / 1e6);
-
       sendMetricToGrafana(`requests_${req.method}`, requestMetrics.methods[req.method], 'sum', '1');
       sendMetricToGrafana('requests_total', requestMetrics.totalRequests, 'sum', '1');
     });
